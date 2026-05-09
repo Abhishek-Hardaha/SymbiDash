@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SymbiDash — Master SIT Pune</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
@@ -139,7 +139,7 @@
 
   /* ── HERO SECTION ── */
   .hero {
-    min-height: 100vh; padding-top: 140px; padding-bottom: 40px;
+    padding-top: 160px; padding-bottom: 20px;
     display: flex; align-items: center;
   }
   .hero-grid {
@@ -147,7 +147,7 @@
   }
   
   .hero-content { max-width: 650px; z-index: 10; text-align: left; }
-  .hero h1 { font-size: clamp(40px, 6.5vw, 84px); font-weight: 900; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(40px, 6.5vw, 84px); font-weight: 900; margin-bottom: 24px; line-height: 1.05; }
   .hero p { font-size: clamp(16px, 2vw, 20px); margin: 0 0 40px 0; max-width: 520px; color: var(--text-muted); font-weight: 400;}
   .hero-ctas { display: flex; gap: 16px; justify-content: flex-start; margin-bottom: 32px; flex-wrap: wrap;}
 
@@ -226,16 +226,19 @@
   .section-pad { padding: 80px 0; }
   .section-title { text-align: center; margin-bottom: 60px; }
   
-  /* Wrapper clips the halo to prevent horizontal scrolling */
+  /* Wrapper clips the halo to prevent horizontal scrolling and feather borders to prevent seams */
   .features-halo-wrapper {
     position: absolute;
-    inset: 0;
+    top: -100px; /* Small safe zone so it doesn't overlap the hero phone */
+    bottom: -100px;
     left: 50%;
     width: 100vw;
     transform: translateX(-50%);
     overflow: hidden;
     z-index: -1;
     pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
   }
 
   /* Scroll-Reactive Ambient Glow behind Features */
@@ -282,8 +285,29 @@
 
   /* ── DOWNLOAD CTA ── */
   .cta-box {
-    position: relative; border-radius: 40px; padding: 100px 40px; text-align: center;
-    background: rgba(10,10,12,0.6); backdrop-filter: blur(24px); border: 1px solid var(--border-light);
+    position: relative; border-radius: 48px; padding: 100px 40px; text-align: center;
+    background: linear-gradient(180deg, rgba(15, 15, 18, 0.4) 0%, rgba(10, 10, 12, 0.9) 100%);
+    backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: -50%; left: 50%;
+    transform: translateX(-50%);
+    width: 80%; height: 100%;
+    background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.35) 0%, rgba(0, 229, 255, 0.1) 40%, transparent 70%);
+    filter: blur(60px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 2;
   }
   
   /* ── TOAST NOTIFICATIONS ── */
@@ -292,9 +316,42 @@
   @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
   /* ── SCROLL REVEALS ── */
-  .reveal { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(12px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(20px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
   .reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   .delay-100 { transition-delay: 100ms; } .delay-200 { transition-delay: 200ms; } .delay-300 { transition-delay: 300ms; }
+
+  /* ── SIGNATURE REVEAL ── */
+  .signature {
+    margin-top: 48px;
+    font-size: 15px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .handwritten {
+    font-family: 'Dancing Script', cursive;
+    font-size: 36px;
+    font-weight: 500;
+    color: #ffffff;
+    display: inline-block;
+    transform: rotate(-3deg) translateY(2px);
+    white-space: nowrap;
+  }
+  .handwritten span {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.2) translateY(5px);
+    display: inline-block;
+  }
+  .reveal.active .handwritten span {
+    animation: letterGlowReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes letterGlowReveal {
+    0% { opacity: 0; filter: blur(12px); transform: scale(1.2) translateY(5px); }
+    100% { opacity: 1; filter: blur(0); transform: scale(1) translateY(0); }
+  }
 
   /* ── RESPONSIVE DESIGN (Web & Mobile) ── */
   
@@ -317,7 +374,7 @@
     nav { width: calc(100% - 32px); padding: 0 20px; height: 60px; }
     .nav-links { display: none; }
     
-    .hero { padding-top: 120px; padding-bottom: 40px; }
+    .hero { padding-top: 120px; padding-bottom: 20px; }
     .hero h1 { font-size: clamp(36px, 10vw, 48px); }
     .hero p { margin-bottom: 32px; }
     .hero-ctas { flex-direction: column; width: 100%; gap: 16px; }
@@ -342,9 +399,9 @@
     .section-pad { padding: 60px 0; }
     .section-title { margin-bottom: 32px; }
     
-    .cta-box { padding: 48px 20px; border-radius: 28px; }
-    .cta-box h2 { font-size: clamp(28px, 8vw, 36px); margin-bottom: 16px; }
-    .cta-box .btn { width: 100%; justify-content: center; }
+    .cta-box { padding: 60px 24px; border-radius: 32px; }
+    .cta-box h2 { font-size: clamp(32px, 8vw, 40px); margin-bottom: 24px !important; }
+    .cta-box .btn { width: 100%; justify-content: center; padding: 18px 24px !important; }
     
     #toast-container { right: 16px; left: 16px; bottom: 16px; max-width: none; width: auto; }
   }
@@ -361,8 +418,8 @@
     .feature-card h3 { font-size: 20px; margin-bottom: 8px;}
     .feature-card p { font-size: 14px; line-height: 1.5; }
     
-    .cta-box { padding: 40px 16px; border-radius: 24px; }
-    .cta-box h2 { font-size: 28px; margin-bottom: 12px; }
+    .cta-box { padding: 48px 20px; border-radius: 28px; }
+    .cta-box h2 { font-size: 32px; margin-bottom: 16px !important; }
   }
 </style>
 </head>
@@ -393,12 +450,15 @@
           <span style="width: 6px; height: 6px; background: var(--cyan); border-radius: 50%;"></span> 
           v2.0 Exclusive to SIT Pune
         </div>
-        <h1>Master your semester <br><span class="gradient-text">Automatically.</span></h1>
+        <h1>Download <br><span class="gradient-text">SymbiDash</span></h1>
         <p>Stop manually calculating 75% thresholds or missing Moodle deadlines. SymbiDash tracks your entire academic life natively on your device.</p>
         
         <div class="hero-ctas">
           <a href="#download" class="btn btn-primary">
             <i data-lucide="download" style="width:18px;"></i> Download APK
+          </a>
+          <a href="#" class="btn btn-outline">
+            <i data-lucide="globe" style="width:18px;"></i> Use Web Version
           </a>
         </div>
       </div>
@@ -500,7 +560,7 @@
   <!-- STRICTLY 3 FEATURES SECTION -->
   <section id="features" class="section-pad container" style="position: relative;">
     
-    <!-- Animated background glow wrapper securely containing the halo to stop horizontal scrollbars -->
+    <!-- Animated background glow wrapper securely containing the halo to stop horizontal scrollbars and feathering edges for no seams -->
     <div class="features-halo-wrapper">
       <div class="features-halo" id="features-halo"></div>
     </div>
@@ -542,20 +602,39 @@
   </section>
 
   <!-- CTA Download -->
-  <section id="download" class="section-pad container">
+  <section id="download" class="section-pad container" style="position: relative; z-index: 10;">
     <div class="cta-box reveal">
-      <div style="width:72px; height:72px; border-radius:20px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; margin: 0 auto 32px;">
-        <i data-lucide="smartphone" style="width:36px; height:36px; color:var(--cyan);"></i>
-      </div>
-      <h2 style="font-size: clamp(36px, 5vw, 56px); margin-bottom: 20px; color:#fff;">Stop calculating manually.</h2>
       
-      <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-        <a href="#" class="btn btn-primary"><i data-lucide="android" style="width:20px;"></i> Get Android APK</a>
+      <!-- Inner Glow Effect specific to the CTA Box -->
+      <div class="cta-glow"></div>
+
+      <div class="cta-content">
+        <div class="tag" style="margin-bottom: 24px; background: rgba(138, 43, 226, 0.1); border-color: rgba(138, 43, 226, 0.3); color: #fff;">
+          <i data-lucide="zap" style="width: 14px; height: 14px; color: var(--cyan);"></i> Get it Now
+        </div>
+        
+        <h2 style="font-size: clamp(40px, 6vw, 64px); margin-bottom: 16px; color:#fff; line-height: 1.1; font-weight: 900;">
+          Get <span class="gradient-text">SymbiDash</span> App
+        </h2>
+        
+        <p style="margin: 0 auto 40px; font-size: clamp(16px, 2vw, 20px); max-width: 500px; color: var(--text-muted); font-weight: 400;">
+          Make your Semester easier
+        </p>
+        
+        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+          <a href="#" class="btn btn-primary" style="padding: 20px 40px; font-size: 16px;">
+            <i data-lucide="android" style="width:22px;"></i> Get Android APK
+          </a>
+          <a href="#" class="btn btn-outline" style="padding: 20px 40px; font-size: 16px; background: rgba(255,255,255,0.03);">
+            <i data-lucide="globe" style="width:22px;"></i> Use Web Version
+          </a>
+        </div>
+        
+        <div class="signature">
+          <span>Built by</span> <span class="handwritten">Abhishek Hardaha</span>
+        </div>
       </div>
-      
-      <div style="margin-top: 32px; font-size: 14px; color: var(--text-muted); font-weight: 500; display:flex; align-items:center; justify-content:center; gap:8px;">
-        <i data-lucide="shield-check" style="width:16px; color:var(--success);"></i> Safe, secure, and ad-free forever.
-      </div>
+
     </div>
   </section>
 
@@ -565,12 +644,7 @@
       <i data-lucide="graduation-cap" style="width:22px; color:var(--cyan);"></i> SymbiDash
     </div>
     <div style="color:var(--text-dim); font-size:14px; margin-bottom:32px;">Unofficial app built for SIT Pune students.</div>
-    <div style="display:flex; justify-content:center; gap:32px; margin-bottom:40px; flex-wrap: wrap;">
-      <a href="#" style="color:var(--text-muted); text-decoration:none; font-weight:500; font-size:14px; transition:color 0.2s;">Privacy</a>
-      <a href="#" style="color:var(--text-muted); text-decoration:none; font-weight:500; font-size:14px; transition:color 0.2s;">Terms</a>
-      <a href="#" style="color:var(--text-muted); text-decoration:none; font-weight:500; font-size:14px; transition:color 0.2s;">GitHub</a>
-    </div>
-    <div style="font-family:'JetBrains Mono'; font-size:12px; color:var(--text-dim);">© 2026 SymbiDash Project. All rights reserved.</div>
+    <div style="font-family:'JetBrains Mono'; font-size:12px; color:var(--text-dim);">© 2026 SymbiDash By Abhishek Hardaha.</div>
   </footer>
 
   <!-- Toast Container -->
@@ -651,6 +725,19 @@
       requestAnimationFrame(renderLoop);
     }
     renderLoop();
+
+    // Signature Letter Splitter for Blur Animation
+    const signature = document.querySelector('.handwritten');
+    if(signature) {
+      const text = signature.innerText;
+      signature.innerHTML = '';
+      text.split('').forEach((char, i) => {
+        const span = document.createElement('span');
+        span.innerText = char === ' ' ? '\u00A0' : char; // Preserve spaces
+        span.style.animationDelay = `${0.6 + (i * 0.05)}s`; // Staggered delay starting at 0.6s
+        signature.appendChild(span);
+      });
+    }
 
     // Toast Notification System
     const notifs = [
