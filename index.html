@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SymbiDash — Master SIT Pune</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Parisienne&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
@@ -216,8 +216,15 @@
   .progress-ring { width: 150px; height: 150px; transform: rotate(-90deg); margin: 0 auto; display: block;}
   .progress-ring circle { fill: transparent; stroke-width: 6; }
   .ring-bg { stroke: rgba(255,255,255,0.05); }
-  .ring-fill { stroke: var(--danger); stroke-dasharray: 440; stroke-dashoffset: 132; stroke-linecap: round; animation: fillRing 1.5s ease-out forwards;}
-  @keyframes fillRing { from { stroke-dashoffset: 440; } to { stroke-dashoffset: 132; } }
+  
+  /* Removed animation to allow JS scroll control. Circumference = 2 * pi * r (65) = 408.4 */
+  .ring-fill { 
+    stroke: var(--danger); 
+    stroke-dasharray: 408.4; 
+    stroke-dashoffset: 204.2; /* Starts at 50% */
+    stroke-linecap: round; 
+    transition: stroke 0.3s ease; /* Smooth color change */
+  }
   
   .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .app-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 86px; background: rgba(5,5,5,0.9); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; border-radius: 0 0 42px 42px; }
@@ -331,9 +338,9 @@
     gap: 8px;
   }
   .handwritten {
-    font-family: 'Dancing Script', cursive;
-    font-size: 36px;
-    font-weight: 500;
+    font-family: 'Parisienne', cursive;
+    font-size: clamp(26px, 6vw, 40px);
+    font-weight: 400;
     color: #ffffff;
     display: inline-block;
     transform: rotate(-3deg) translateY(2px);
@@ -513,15 +520,20 @@
                   <div style="position:relative; height:150px;">
                     <svg class="progress-ring" viewBox="0 0 150 150">
                       <circle class="ring-bg" cx="75" cy="75" r="65"></circle>
-                      <circle class="ring-fill" cx="75" cy="75" r="65"></circle>
+                      <circle id="attendance-ring" class="ring-fill" cx="75" cy="75" r="65"></circle>
                     </svg>
                     <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                      <span style="font-family:'Outfit'; font-weight:900; font-size:40px; line-height:1; color:#fff;">70%</span>
+                      <span id="attendance-text" style="font-family:'Outfit'; font-weight:900; font-size:40px; line-height:1; color:#fff;">50%</span>
                       <span style="font-family:'JetBrains Mono'; font-size:11px; color:#888; margin-top:4px;">278/393</span>
                     </div>
                   </div>
-                  <div style="margin-top:20px; background:rgba(255,51,102,0.1); color:var(--danger); border-radius:10px; padding:12px; font-size:12px; font-weight:600; text-align:center; display:flex; justify-content:center; gap:8px;">
-                    <i data-lucide="triangle-alert" style="width:16px;"></i> Danger! Attend 67 classes
+                  <div id="attendance-status-bg" style="margin-top:20px; background:rgba(255,51,102,0.1); border-radius:10px; padding:12px; font-size:12px; font-weight:600; text-align:center;">
+                    <div id="status-danger" style="display:flex; justify-content:center; gap:8px; color:var(--danger);">
+                      <i data-lucide="triangle-alert" style="width:16px;"></i> Danger! Attend 67 classes
+                    </div>
+                    <div id="status-safe" style="display:none; justify-content:center; gap:8px; color:var(--success);">
+                      <i data-lucide="check-circle" style="width:16px;"></i> Safe! 12 classes buffer
+                    </div>
                   </div>
                 </div>
 
@@ -689,6 +701,12 @@
     // Scroll Physics & Dynamic Glow
     const phoneScene = document.getElementById('phone-3d');
     const featuresHalo = document.getElementById('features-halo');
+    const attendanceRing = document.getElementById('attendance-ring');
+    const attendanceText = document.getElementById('attendance-text');
+    const attendanceStatusBg = document.getElementById('attendance-status-bg');
+    const statusDanger = document.getElementById('status-danger');
+    const statusSafe = document.getElementById('status-safe');
+
     let currentScroll = window.scrollY;
     let targetScroll = window.scrollY;
 
@@ -720,6 +738,29 @@
         const haloRot = currentScroll * 0.15; // Fast rotation
         const haloY = currentScroll * 0.5;    // Rapid parallax vertical translation
         featuresHalo.style.transform = `translate(-50%, calc(-50% + ${haloY}px)) rotate(${haloRot}deg)`;
+      }
+
+      // Dynamic Attendance Logic based on scroll depth
+      if (attendanceRing && attendanceText) {
+        // Map scroll 0 -> 300 to 50% -> 90% (fills faster so it stays well in view)
+        let scrollProgress = Math.min(Math.max(currentScroll / 300, 0), 1);
+        let currentPercent = 50 + (scrollProgress * 40);
+        let offset = 408.4 - (408.4 * currentPercent / 100);
+        
+        attendanceRing.style.strokeDashoffset = offset;
+        attendanceText.innerText = Math.round(currentPercent) + '%';
+        
+        if (currentPercent >= 75) {
+            attendanceRing.style.stroke = 'var(--success)';
+            attendanceStatusBg.style.background = 'rgba(0, 255, 136, 0.1)';
+            statusDanger.style.display = 'none';
+            statusSafe.style.display = 'flex';
+        } else {
+            attendanceRing.style.stroke = 'var(--danger)';
+            attendanceStatusBg.style.background = 'rgba(255, 51, 102, 0.1)';
+            statusDanger.style.display = 'flex';
+            statusSafe.style.display = 'none';
+        }
       }
 
       requestAnimationFrame(renderLoop);
