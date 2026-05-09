@@ -743,7 +743,7 @@
       // Dynamic Attendance Logic based on scroll depth
       if (attendanceRing && attendanceText) {
         // Map scroll 0 -> 300 to 50% -> 90% (fills faster so it stays well in view)
-        let scrollProgress = Math.min(Math.max(currentScroll / 300, 0), 1);
+        let scrollProgress = Math.min(Math.max(currentScroll / 600, 0), 1);
         let currentPercent = 50 + (scrollProgress * 40);
         let offset = 408.4 - (408.4 * currentPercent / 100);
         
