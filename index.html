@@ -144,9 +144,9 @@
     color: var(--cyan);
   }
   .btn-cta-outline:hover { 
-    background: rgba(0, 229, 255, 0.15); 
+    background: rgba(0, 20, 20, 0.15); 
     border-color: var(--cyan);
-    box-shadow: 0 0 30px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.1); 
+    box-shadow: 0 0 30px rgba(0, 20, 20, 0.3), inset 0 0 15px rgba(0, 20, 20	, 0.1); 
     transform: translateY(-2px); 
   }
 
@@ -594,7 +594,7 @@
     </div>
 
     <div class="section-title reveal">
-      <div class="tag" style="margin-bottom: 16px;">Core Features</div>
+      <div class="tag" style="margin-bottom: 16px;">App Features</div>
       <h2 style="font-size: clamp(36px, 5vw, 56px);">Everything you need.</h2>
       <p style="margin: 16px auto 0; max-width: 500px;">The strictly essential tools required to survive engineering, built seamlessly into one clean app.</p>
     </div>
@@ -788,7 +788,7 @@
     if (heroDownloadBtn) {
       heroDownloadBtn.addEventListener('click', function(e) {
         e.preventDefault(); // Stop it from instantly jumping down
-        this.innerHTML = `<i data-lucide="arrow-down" style="width:18px;"></i> You have to scroll down`;
+        this.innerHTML = `<i data-lucide="arrow-down" style="width:18px;"></i> Scroll down`;
         lucide.createIcons();
         
         setTimeout(() => {
