@@ -127,12 +127,28 @@
   }
   .btn-primary:hover { 
     transform: translateY(-2px); 
-    box-shadow: 0 10px 30px rgba(0,229,255,0.5); 
+    box-shadow: 0 10px 30px rgba(0,150,150,0.3); 
     filter: brightness(1.1); 
   }
   
   .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-light); }
   .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--border-hover); transform: translateY(-2px); }
+
+  .btn-cta-outline { 
+    background: rgba(0, 229, 255, 0.05); 
+    color: #fff; 
+    border: 1px solid rgba(0, 229, 255, 0.5); 
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.15), inset 0 0 10px rgba(0, 229, 255, 0.05);
+  }
+  .btn-cta-outline i {
+    color: var(--cyan);
+  }
+  .btn-cta-outline:hover { 
+    background: rgba(0, 229, 255, 0.15); 
+    border-color: var(--cyan);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.1); 
+    transform: translateY(-2px); 
+  }
 
   /* ── LAYOUT ── */
   .container { max-width: 1240px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
@@ -306,7 +322,7 @@
     top: -50%; left: 50%;
     transform: translateX(-50%);
     width: 80%; height: 100%;
-    background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.35) 0%, rgba(0, 229, 255, 0.1) 40%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.15) 0%, rgba(0, 229, 255, 0.05) 40%, transparent 70%);
     filter: blur(60px);
     z-index: 0;
     pointer-events: none;
@@ -446,7 +462,7 @@
       <li><a href="#features">Features</a></li>
       <li><a href="#download">Download</a></li>
     </ul>
-    <a href="#download" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px;">Get App</a>
+    <a href="#download" class="btn btn-cta-outline" style="padding: 10px 24px; font-size: 14px;">Get App</a>
   </nav>
 
   <!-- Hero Section -->
@@ -461,7 +477,7 @@
         <p>Stop manually calculating 75% thresholds or missing Moodle deadlines. SymbiDash tracks your entire academic life natively on your device.</p>
         
         <div class="hero-ctas">
-          <a href="#download" class="btn btn-primary">
+          <a href="#download" id="hero-download-btn" class="btn btn-cta-outline" style="min-width: 180px;">
             <i data-lucide="download" style="width:18px;"></i> Download APK
           </a>
           <a href="#" class="btn btn-outline">
@@ -483,7 +499,7 @@
             </div>
             <div>
               <div style="font-family:'Outfit'; font-weight:700; font-size:15px; color:#fff;">Overdue Task</div>
-              <div style="font-size:13px; color:var(--text-muted);">Numerical Methods</div>
+              <div style="font-size:13px; color:var(--text-muted);">Get alerts on time</div>
             </div>
           </div>
 
@@ -493,7 +509,7 @@
             </div>
             <div>
               <div style="font-family:'Outfit'; font-weight:700; font-size:15px; color:#fff;">Announcement</div>
-              <div style="font-size:13px; color:var(--text-muted);">Guest Lecture Updates</div>
+              <div style="font-size:13px; color:var(--text-muted);">New updates</div>
             </div>
           </div>
 
@@ -529,7 +545,7 @@
                   </div>
                   <div id="attendance-status-bg" style="margin-top:20px; background:rgba(255,51,102,0.1); border-radius:10px; padding:12px; font-size:12px; font-weight:600; text-align:center;">
                     <div id="status-danger" style="display:flex; justify-content:center; gap:8px; color:var(--danger);">
-                      <i data-lucide="triangle-alert" style="width:16px;"></i> Danger! Attend 67 classes
+                      <i data-lucide="triangle-alert" style="width:16px;"></i> Need to attend 67 classes
                     </div>
                     <div id="status-safe" style="display:none; justify-content:center; gap:8px; color:var(--success);">
                       <i data-lucide="check-circle" style="width:16px;"></i> Safe! 12 classes buffer
@@ -635,7 +651,7 @@
         
         <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
           <a href="#" class="btn btn-primary" style="padding: 20px 40px; font-size: 16px;">
-            <i data-lucide="android" style="width:22px;"></i> Get Android APK
+            <i data-lucide="download" style="width:22px;"></i> Get Android APK
           </a>
           <a href="#" class="btn btn-outline" style="padding: 20px 40px; font-size: 16px; background: rgba(255,255,255,0.03);">
             <i data-lucide="globe" style="width:22px;"></i> Use Web Version
@@ -742,8 +758,8 @@
 
       // Dynamic Attendance Logic based on scroll depth
       if (attendanceRing && attendanceText) {
-        // Map scroll 0 -> 300 to 50% -> 90% (fills faster so it stays well in view)
-        let scrollProgress = Math.min(Math.max(currentScroll / 600, 0), 1);
+        // Map scroll 0 -> 650 to 50% -> 90% (fills faster so it stays well in view)
+        let scrollProgress = Math.min(Math.max(currentScroll / 650, 0), 1);
         let currentPercent = 50 + (scrollProgress * 40);
         let offset = 408.4 - (408.4 * currentPercent / 100);
         
@@ -766,6 +782,21 @@
       requestAnimationFrame(renderLoop);
     }
     renderLoop();
+
+    // Hero Download Button Easter Egg
+    const heroDownloadBtn = document.getElementById('hero-download-btn');
+    if (heroDownloadBtn) {
+      heroDownloadBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Stop it from instantly jumping down
+        this.innerHTML = `<i data-lucide="arrow-down" style="width:18px;"></i> You have to scroll down`;
+        lucide.createIcons();
+        
+        setTimeout(() => {
+          this.innerHTML = `<i data-lucide="download" style="width:18px;"></i> Download APK`;
+          lucide.createIcons();
+        }, 3000);
+      });
+    }
 
     // Signature Letter Splitter for Blur Animation
     const signature = document.querySelector('.handwritten');
