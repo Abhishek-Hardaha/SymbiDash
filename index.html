@@ -339,7 +339,7 @@
   @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
   /* ── SCROLL REVEALS ── */
-  .reveal { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(20px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal { opacity: 0; transform: translateY(80px) scale(0.95); filter: blur(24px); transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
   .reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   .delay-100 { transition-delay: 100ms; } .delay-200 { transition-delay: 200ms; } .delay-300 { transition-delay: 300ms; }
 
@@ -690,7 +690,7 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.25, rootMargin: "0px 0px -50px 0px" }); // Requires more scrolling to trigger
     reveals.forEach(el => observer.observe(el));
 
     // Nav Scroll Interaction
@@ -729,7 +729,8 @@
     window.addEventListener('scroll', () => { targetScroll = window.scrollY; });
 
     function renderLoop() {
-      currentScroll += (targetScroll - currentScroll) * 0.08; // Smoother easing
+      // Increased from 0.08 to 0.35 to drastically reduce smoothing/lag and make it snappier
+      currentScroll += (targetScroll - currentScroll) * 0.35; 
       
       if (phoneScene) {
         // Advanced scroll movements: Parallax Translation + 3D Tilt based on scroll depth
