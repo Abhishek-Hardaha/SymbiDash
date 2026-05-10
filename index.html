@@ -397,7 +397,7 @@
     nav { width: calc(100% - 32px); padding: 0 20px; height: 60px; }
     .nav-links { display: none; }
     
-    .hero { padding-top: 100px; padding-bottom: 20px; }
+    .hero { padding-top: 120px; padding-bottom: 20px; }
     .hero h1 { font-size: clamp(36px, 10vw, 48px); }
     .hero p { margin-bottom: 32px; }
     .hero-ctas { flex-direction: column; width: 100%; gap: 16px; }
@@ -431,39 +431,18 @@
 
   /* Small Mobile Devices */
   @media (max-width: 480px) {
-    .hero { padding-top: 80px; }
-    .hero h1 { font-size: clamp(32px, 8vw, 40px); }
-    .hero p { font-size: 14px; margin-bottom: 24px; }
-    
-    .phone-scene { margin-bottom: -60px; }
-    
-    /* Ensure badges stay well within the screen */
-    .badge-3d { padding: 10px 12px; gap: 8px; transform: translateZ(80px) scale(0.9); }
-    .badge-3d.left { right: 10px; top: 2%; }
-    .badge-3d.right { left: 10px; bottom: 8%; }
+    .phone-scene { margin-bottom: -40px; }
+    /* Overlap the phone completely on tiny screens */
+    .badge-3d.left { right: 0px; top: 5%; }
+    .badge-3d.right { left: 0px; bottom: 8%; }
 
     /* Tighter sizing for very small screens */
-    .feature-card { padding: 20px 16px; border-radius: 16px; }
-    .feature-card h3 { font-size: 18px; margin-bottom: 6px;}
-    .feature-card p { font-size: 13px; line-height: 1.5; }
-    .feat-icon { width: 36px; height: 36px; margin-bottom: 16px; }
-    .feat-icon i { width: 20px !important; height: 20px !important; }
+    .feature-card { padding: 24px 16px; border-radius: 18px; }
+    .feature-card h3 { font-size: 20px; margin-bottom: 8px;}
+    .feature-card p { font-size: 14px; line-height: 1.5; }
     
-    .cta-box { padding: 40px 16px; border-radius: 24px; }
-    .cta-box h2 { font-size: 28px !important; margin-bottom: 12px !important; }
-    .cta-box p { font-size: 14px !important; margin-bottom: 24px !important; }
-    .cta-box .btn { padding: 14px 20px !important; font-size: 14px !important; width: 100%; }
-    
-    footer { padding: 40px 20px; }
-  }
-
-  /* Extra Small Devices (e.g. Galaxy Fold, very old phones) */
-  @media (max-width: 360px) {
-    .badge-3d { display: none; } /* Hide floating badges to save space */
-    .hero h1 { font-size: 28px !important; }
-    .btn { padding: 12px 16px !important; font-size: 13px !important; }
-    .app-card { padding: 16px; }
-    .signature .handwritten { font-size: 24px !important; }
+    .cta-box { padding: 48px 20px; border-radius: 28px; }
+    .cta-box h2 { font-size: 32px; margin-bottom: 16px !important; }
   }
 </style>
 </head>
@@ -763,11 +742,9 @@
         // Dynamically maintain safe scaling on mobile while scrolling
         const isMobile = window.innerWidth <= 768;
         const isSmallMobile = window.innerWidth <= 480;
-        const isTinyMobile = window.innerWidth <= 360;
         let baseScale = 1;
         
-        if (isTinyMobile) baseScale = 0.65;
-        else if (isSmallMobile) baseScale = 0.75;
+        if(isSmallMobile) baseScale = 0.75;
         else if (isMobile) baseScale = 0.85;
 
         phoneScene.style.transform = `scale(${baseScale}) translateY(${transY}px) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
